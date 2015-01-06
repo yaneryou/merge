@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>merge demo</title>
+    <meta charset="utf-8">
+    <link rel=stylesheet href="merge.css">
+    <script src="lib/ace-editor/ace.js"></script>
+    <script src="lib/jquery-1.7.2.min.js"></script>
+    <script src="lib/diff_match_patch.js"></script>
+    <script src="merge.js"></script>
+    <style>
+        span.clicky {
+            cursor: pointer;
+            background: #d70;
+            color: white;
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+<div id=view></div>
+<span class=clicky onclick="initUI(2)">two-way</span>
+
+<span class=clicky onclick="initUI(3)">three-way</span>
+<script>
+    var value, orig1, orig2, dv;
+    ace.config.set("basePath","./lib/ace-editor");
+    function initUI(panes) {
+        if (value == null) return;
+        var target = document.getElementById("view");
+        target.innerHTML = "";
+        MergeView(target, {
+            value: value,
+            origLeft: panes == 3  ? orig1 : null,
+            orig: orig2,
+            mode: "html"
+        });
+    }
+    window.onload = function() {
+        value = document.documentElement.innerHTML;
+        orig1 = value.replace(/\.\.\//g, "ace/").replace("yellow", "orange");
+        orig2 = value.replace(/\u003cscript/g, "\u003cscript type=text/javascript ")
+                .replace("white", "purple;\n      font: comic sans;\n      text-decoration: underline;\n      height: 15em");
+        initUI(2);
+    };
+
+</script>
+
+</body>
+</html>

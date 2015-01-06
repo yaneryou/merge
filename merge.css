@@ -1,0 +1,125 @@
+.ace-merge {
+  position: relative;
+  border: 1px solid #ddd;
+  white-space: pre;
+}
+
+.ace-merge, .ace-merge .ace {
+  height: 350px;
+}
+
+.ace-merge-2pane .ace-merge-pane { width: 47%; }
+.ace-merge-2pane .ace-merge-gap { width: 6%; }
+.ace-merge-3pane .ace-merge-pane { width: 31%; }
+.ace-merge-3pane .ace-merge-gap { width: 3.5%; }
+
+.ace-merge-3pane .ace-merge-pane,
+.ace-merge-2pane .ace-merge-pane{
+    height: 100%;
+}
+
+.ace-merge-pane {
+  display: inline-block;
+  white-space: normal;
+  vertical-align: top;
+}
+.ace-merge-pane-rightmost {
+  position: absolute;
+  right: 0px;
+  z-index: 1;
+}
+
+.ace-merge-gap {
+  z-index: 2;
+  display: inline-block;
+  height: 100%;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  position: relative;
+  background: #f8f8f8;
+}
+
+.ace-merge-scrolllock-wrap {
+  position: absolute;
+  bottom: 0; left: 50%;
+}
+.ace-merge-scrolllock {
+  position: relative;
+  left: -50%;
+  cursor: pointer;
+  color: #555;
+  line-height: 1;
+}
+
+.ace-merge-copybuttons-left, .ace-merge-copybuttons-right {
+  position: absolute;
+  left: 0; top: 0;
+  right: 0; bottom: 0;
+  line-height: 1;
+}
+
+.ace-merge-copy {
+  position: absolute;
+  cursor: pointer;
+  color: #44c;
+}
+
+.ace-merge-copy-reverse {
+  position: absolute;
+  cursor: pointer;
+  color: #44c;
+}
+
+.ace-merge-copybuttons-left .ace-merge-copy { left: 2px; }
+.ace-merge-copybuttons-right .ace-merge-copy { right: 2px; }
+
+.ace-merge-r-inserted, .ace-merge-l-inserted {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAYAAACddGYaAAAAGUlEQVQI12MwuCXy3+CWyH8GBgYGJgYkAABZbAQ9ELXurwAAAABJRU5ErkJggg==);
+  background-position: bottom left;
+  background-repeat: repeat-x;
+    position: absolute;
+    z-index: 100;
+
+}
+
+.ace-merge-r-deleted, .ace-merge-l-deleted {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAYAAACddGYaAAAAGUlEQVQI12M4Kyb2/6yY2H8GBgYGJgYkAABURgPz6Ks7wQAAAABJRU5ErkJggg==);
+  background-position: bottom left;
+  background-repeat: repeat-x;
+    position: absolute;
+    z-index: 100;
+}
+
+.ace-merge-gutter-del{
+    background-image: url(./image/minus.png);
+ }
+.ace-merge-gutter-insert{
+    background-image: url(./image/add.png);
+}
+
+.ace-merge-r-chunk { background: #ffffe0; position: absolute;}
+.ace-merge-r-chunk-start { border-top: 1px solid #ee8; background: #ffffe0; position: absolute;}
+.ace-merge-r-chunk-end { border-bottom: 1px solid #ee8;background: #ffffe0; position: absolute; }
+.ace-merge-r-chunk-emptystart { border-top: 1px solid #ee8; position: absolute;}
+.ace-merge-r-chunk-emptyend { border-bottom: 1px solid #ee8; position: absolute; }
+.ace-merge-r-chunk-startend { border-top: 1px solid #ee8;border-bottom: 1px solid #ee8; background: #ffffe0; position: absolute;}
+.ace-merge-r-connect { fill: #ffffe0; stroke: #ee8; stroke-width: 1px; }
+
+.ace-merge-l-chunk { background: #eef;  position: absolute;}
+.ace-merge-l-chunk-start { border-top: 1px solid #88e;background: #eef;  position: absolute;}
+.ace-merge-l-chunk-end { border-bottom: 1px solid #88e;background: #eef; position: absolute; }
+.ace-merge-l-chunk-emptystart { border-top: 1px solid #88e; position: absolute;}
+.ace-merge-l-chunk-emptyend { border-bottom: 1px solid #88e; position: absolute; }
+.ace-merge-l-chunk-startend { border-top: 1px solid #88e;border-bottom: 1px solid #88e;background: #eef;  position: absolute;}
+.ace-merge-l-connect { fill: #eef; stroke: #88e; stroke-width: 1px; }
+
+.ace-merge-l-chunk.ace-merge-r-chunk { background: #dfd;  position: absolute;}
+.ace-merge-l-chunk-start.ace-merge-r-chunk-start { border-top: 1px solid #4e4; background: #dfd;  position: absolute;}
+.ace-merge-l-chunk-end.ace-merge-r-chunk-end { border-bottom: 1px solid #4e4; background: #dfd; position: absolute; }
+.ace-merge-l-chunk-startend.ace-merge-r-chunk-startend { border-top: 1px solid #4e4; border-bottom: 1px solid #4e4; background: #dfd;  position: absolute;}
+.ace-merge-l-chunk-emptystart.ace-merge-r-chunk-emptystart { border-top: 1px solid #4e4; position: absolute; }
+.ace-merge-l-chunk-emptyend.ace-merge-r-chunk-emptyend { border-bottom: 1px solid #4e4; position: absolute; }
+
