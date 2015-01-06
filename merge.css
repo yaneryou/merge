@@ -93,12 +93,13 @@
     z-index: 100;
 }
 
-.ace-merge-gutter-del{
-    background-image: url(./image/minus.png);
- }
 .ace-merge-gutter-insert{
     background-image: url(./image/add.png);
 }
+.ace-merge-gutter-del{
+    background-image: url(./image/minus.png);
+ }
+
 
 .ace-merge-r-chunk { background: #ffffe0; position: absolute;}
 .ace-merge-r-chunk-start { border-top: 1px solid #ee8; background: #ffffe0; position: absolute;}
