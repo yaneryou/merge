@@ -71,9 +71,6 @@
         function update() {
             ensureDiff(dv);
 
-            clearGutter(dv.edit,edit.gutter);
-            clearGutter(dv.orig,orig.gutter);
-
             updateMarks(dv.edit, dv.diff, edit, DIFF_INSERT, dv.classes);
             updateMarks(dv.orig, dv.diff, orig, DIFF_DELETE, dv.classes);
 
@@ -219,39 +216,31 @@
     }
 
     function updateGutter(dv,edit,orig){
+        clearGutter(dv.edit,edit);
+        clearGutter(dv.orig,orig);
         dv.orig.resize(true);
         dv.edit.resize(true);
         var chunks = getChunks(dv);
-        var editmap = {};
-        for(var i=0;i<edit.length;i++){
-            editmap[edit[i].line] = edit[i].clazz;
-        }
-        var origmap = {};
-        for(var i=0;i<orig.length;i++){
-            origmap[orig[i].line] = orig[i].clazz;
-        }
         var origsession = dv.orig.getSession(),
             editsession = dv.edit.getSession();
 
-        for(var i=0;i<chunks.length;i++){
+        for (var i = 0; i < chunks.length; i++) {
             var obj = chunks[i];
-            for(var j=obj.origFrom;j<obj.origTo;j++){
-                if(!origmap[j]){
-                    origsession.addGutterDecoration(j,"ace-merge-gutter-del");
-                    orig.push({
-                        line: j,
-                        clazz:"ace-merge-gutter-del"
-                    });
-                }
+            for (var j = obj.origFrom; j < obj.origTo; j++) {
+                origsession.addGutterDecoration(j, "ace-merge-gutter-del");
+                orig.push({
+                    line: j,
+                    clazz: "ace-merge-gutter-del"
+                });
+
             }
-            for(var j=obj.editFrom;j<obj.editTo;j++){
-                if(!editmap[j]){
-                    editsession.addGutterDecoration(j,"ace-merge-gutter-insert");
-                    edit.push({
-                        line: j,
-                        clazz:"ace-merge-gutter-insert"
-                    });
-                }
+            for (var j = obj.editFrom; j < obj.editTo; j++) {
+                editsession.addGutterDecoration(j, "ace-merge-gutter-insert");
+                edit.push({
+                    line: j,
+                    clazz: "ace-merge-gutter-insert"
+                });
+
             }
         }
     }
@@ -267,8 +256,7 @@
     function updateMarks(editor, diff, state, type, classes) {
         var from = 0,
             to = new Document(editor.getValue()).getLength(),
-            marks = state.marked,
-            gutter = state.gutter;
+            marks = state.marked;
 
         clearMarks(editor, marks);
 
@@ -277,7 +265,6 @@
         var top = Pos(from, 0), bot = Pos(to - 1>=0?to - 1:0, session.getLine(to - 1>=0?to - 1:0).length);
         var cls = type == DIFF_DELETE ? classes.del : classes.insert;
 
-        var gutterCls = type == DIFF_DELETE ? "ace-merge-gutter-del" : "ace-merge-gutter-insert";
 
         //3-way
         function duplClazz(curclass,range){
@@ -353,13 +340,6 @@
                         var range = new Range(a.line,a.ch, b.line,b.ch);
                         var markerID = session.addMarker(range, cls, "text");
                         marks.push(markerID);
-                        for(var j=a.line;j<=b.line;j++){
-                            session.addGutterDecoration(j,gutterCls);
-                            gutter.push({
-                                line: j,
-                                clazz:gutterCls
-                            });
-                        }
                     }
                     pos = end;
                 }
