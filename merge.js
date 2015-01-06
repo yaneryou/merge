@@ -37,6 +37,7 @@
     DiffView.prototype = {
         constructor: DiffView,
         init: function (pane, orig, options) {
+
             this.edit = this.mv.edit;
             this.orig = ace.edit(pane);
             this.orig.getSession().setMode('ace/mode/'+options.mode);
@@ -46,6 +47,8 @@
             this.orig.resize(true); //强制edit渲染
             this.diff = getDiff(asString(orig), asString(options.value));
             this.diffOutOfDate = false;
+            this.lineHeight = $('.ace_line',this.mv.node).height();
+            this.orig.pane = pane;
 
             registerUpdate(this);
             setScrollLock(this, true, false);
@@ -94,16 +97,28 @@
 
     function registerScroll(dv) {
         dv.edit.getSession().on("changeScrollTop", function () {
-            syncScroll(dv, DIFF_INSERT,'top') && makeConnections(dv);
+            if($('.ace_scrollbar-v',dv.orig.pane).css('display')!="none"){
+                syncScroll(dv, DIFF_INSERT,'top')
+            }
+            makeConnections(dv);
         });
         dv.orig.getSession().on("changeScrollTop", function () {
-            syncScroll(dv, DIFF_DELETE,'top') && makeConnections(dv);
+            if($('.ace_scrollbar-v',dv.edit.pane).css('display')!="none"){
+                syncScroll(dv, DIFF_DELETE,'top')
+            }
+            makeConnections(dv);
         });
         dv.edit.getSession().on("changeScrollLeft", function () {
-            syncScroll(dv, DIFF_INSERT,'left');
+            if($('.ace_scrollbar-h',dv.orig.pane).css('display')!="none"){
+                syncScroll(dv, DIFF_INSERT,'left');
+            }
+
         });
         dv.orig.getSession().on("changeScrollLeft", function () {
-            syncScroll(dv, DIFF_DELETE,'left');
+            if($('.ace_scrollbar-h',dv.edit.pane).css('display')!="none"){
+                syncScroll(dv, DIFF_DELETE,'left');
+            }
+
         });
     }
 
@@ -127,8 +142,8 @@
         var sInfo = {
             top: editor.getSession().getScrollTop(),
             left: editor.getSession().getScrollLeft(),
-            height: $('.ace_line').height()*(new Document(editor.getValue()).getLength()),
-            clientHeight: $('.ace_scroller').height()
+            height: dv.lineHeight*(new Document(editor.getValue()).getLength()),
+            clientHeight: $('.ace_scroller',dv.mv.node).height()
         };
 
         if(dir=="left"){
@@ -143,10 +158,10 @@
         }
 
         var halfScreen = .5 * sInfo.clientHeight, midY = sInfo.top + halfScreen;
-        var mid = Math.floor(midY/$('.ace_line').height());
+        var mid = Math.floor(midY/dv.lineHeight);
         var around = chunkBoundariesAround(dv.diff, mid, type == DIFF_INSERT);
-        var off = getOffsets(editor, type == DIFF_INSERT ? around.edit : around.orig);
-        var offOther = getOffsets(other, type == DIFF_INSERT ? around.orig : around.edit);
+        var off = getOffsets(dv.lineHeight,editor, type == DIFF_INSERT ? around.edit : around.orig);
+        var offOther = getOffsets(dv.lineHeight,other, type == DIFF_INSERT ? around.orig : around.edit);
         var ratio = (midY - off.top) / (off.bot - off.top);
         var targetPos = (offOther.top - halfScreen) + ratio * (offOther.bot - offOther.top);
 
@@ -159,8 +174,8 @@
             var otherInfo = {
                 top: other.getSession().getScrollTop(),
                 left: other.getSession().getScrollLeft(),
-                height: $('.ace_line').height()*(new Document(other.getValue()).getLength()),
-                clientHeight: $('.ace_scroller').height()
+                height: dv.lineHeight*(new Document(other.getValue()).getLength()),
+                clientHeight: $('.ace_scroller',dv.mv.node).height()
             }
             var botDistOther = otherInfo.height - otherInfo.clientHeight - targetPos;
             if (botDistOther > botDist && (mix = botDist / halfScreen) < 1)
@@ -176,11 +191,11 @@
         return true;
     }
 
-    function getOffsets(editor, around) {
+    function getOffsets(lineHeight,editor, around) {
         var bot = around.after;
         if (bot == null) bot = new Document(editor.getValue()).getLength();
-        return {top: $('.ace_line').height()*(around.before || 0),
-            bot: $('.ace_line').height()*bot};
+        return {top: lineHeight*(around.before || 0),
+            bot: lineHeight*bot};
     }
 
     function setScrollLock(dv, val, action) {
@@ -347,6 +362,12 @@
             };
         var sTopEdit = dv.edit.getSession().getScrollTop(),
             sTopOrig = dv.orig.getSession().getScrollTop();
+        if($('.ace_scrollbar-v',dv.edit.pane).css('display')=="none"){
+            sTopEdit = 0;
+        }
+        if($('.ace_scrollbar-v',dv.orig.pane).css('display')=="none"){
+            sTopOrig = 0;
+        }
 
         iterateChunks(dv.diff, function (topOrig, botOrig, topEdit, botEdit) {
             if (topEdit <= vpEdit.to && botEdit >= vpEdit.from &&
@@ -357,7 +378,7 @@
     }
 
     function drawConnectorsForChunk(dv, topOrig, botOrig, topEdit, botEdit, sTopOrig, sTopEdit, w) {
-        var lineheight = $('.ace_line').height();
+        var lineheight = dv.lineHeight;
         var flip = dv.type == "left";
         var top = lineheight*topOrig - sTopOrig;
         if (dv.svg) {
@@ -405,6 +426,8 @@
     var MergeView = function (node, options) {
         if (!(this instanceof MergeView)) return new MergeView(node, options);
 
+        this.node = node;
+
         this.options = options;
         var origLeft = options.origLeft, origRight = options.origRight == null ? options.orig : options.origRight;
 
@@ -439,6 +462,7 @@
         this.edit.getSession().setValue(options.value);
         this.edit.setShowFoldWidgets(false);
         this.edit.resize(true);
+        this.edit.pane = editPane;
 
         if (left) left.init(leftPane, origLeft, options);
         if (right) right.init(rightPane, origRight, options);
